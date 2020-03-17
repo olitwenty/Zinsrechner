@@ -15,13 +15,13 @@ minDarlehen = args.darlehen[1]
 maxZinssatz = args.zinssatz[0] / 100
 minZinssatz = args.zinssatz[1] / 100
 maxTilgung = args.tilgung[0] /100
-minTilgung = args.tilgung[0] /100
+minTilgung = args.tilgung[1] /100
 
 
 f = "Jahr: {:<15}Restschuld: {:<15.2f}Tilgung: {:<15.2f}"
 
 def orange(start, stop, step):
-    pass
+    return [start-step*x for x in range(round((start-stop)/step))]
 
 def rek(darlehen, zinssatz, jahre):
     if darlehen < rate*12:
@@ -31,9 +31,9 @@ def rek(darlehen, zinssatz, jahre):
         print(f.format(jahre, darlehen, rate*12-darlehen*zinssatz))
         return rek((darlehen - (rate * 12 - (darlehen * zinssatz))), zinssatz, jahre + 1)
     
-for d in range(maxDarlehen, minDarlehen, -10000):
-    for z in range(maxZinssatz, minZinssatz, -0.5):
-        for t in range(maxTilgung, minTilgung, -0.5):
+for d in orange(maxDarlehen, minDarlehen, 10000):
+    for z in orange(maxZinssatz, minZinssatz, 0.005):
+        for t in orange(maxTilgung, minTilgung, 0.005):
             rate = (z + t) * d / 12
             print(rate)
             rek(d, z, 0)
@@ -45,7 +45,7 @@ for d in range(maxDarlehen, minDarlehen, -10000):
 #f.write("kshvksajjsd")
 #f.close()
 
-print(maxDarlehen)
-print(zinssatz)
-print(tilgung)
-print(maxDarlehen * ((zinssatz + tilgung) / 100) / 12)
+#print(maxDarlehen)
+#print(zinssatz)
+#print(tilgung)
+#print(maxDarlehen * ((zinssatz + tilgung) / 100) / 12)
