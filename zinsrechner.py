@@ -18,34 +18,29 @@ maxTilgung = args.tilgung[0] /100
 minTilgung = args.tilgung[1] /100
 
 
-f = "Jahr: {:<15}Restschuld: {:<15.2f}Tilgung: {:<15.2f}"
+fJahr = "Jahr: {:<15}Restschuld: {:<15.2f}Tilgung: {:<15.2f}"
+fInfo = "Darlehen(Euro): {:<15.2f}Zinsatz(%): {:<15.2f}Anfängliche Tilgung(%): {:<15.2f}Monatliche Rate(Euro): {:<15.2f}"
+
 
 def orange(start, stop, step):
     return [start-step*x for x in range(round((start-stop)/step))]
 
 def rek(darlehen, zinssatz, jahre):
     if darlehen < rate*12:
-        print(f.format(jahre, darlehen, darlehen))
+        file.write(fJahr.format(jahre, darlehen, darlehen))
+        file.close()
         return
     else:
-        print(f.format(jahre, darlehen, rate*12-darlehen*zinssatz))
+        file.write(fJahr.format(jahre, darlehen, rate * 12 - (darlehen * zinssatz), rate * 12)+"\n")
         return rek((darlehen - (rate * 12 - (darlehen * zinssatz))), zinssatz, jahre + 1)
     
+os.mkdir("Kreditrechnungen")
 for d in orange(maxDarlehen, minDarlehen, 10000):
+    os.mkdir("Kreditrechnungen/"+str(d)+"_Euro")
     for z in orange(maxZinssatz, minZinssatz, 0.005):
+        os.mkdir("Kreditrechnungen/"+str(d)+"_Euro/"+str(z)+"_Zinssatz(%)")
         for t in orange(maxTilgung, minTilgung, 0.005):
+            file = open("Kreditrechnungen/"+str(d)+"_Euro/"+str(z)+"_Zinssatz(%)/"+str(t)+"Tilgung(%).txt", "w", newline="\n")
             rate = (z + t) * d / 12
-            print(rate)
+            file.write(fInfo.format(d, z*100, t*100, rate)+"\n")
             rek(d, z, 0)
-
-#os.mkdir("test")
-#os.mkdir("test/abc")
-#f = open("test/"+str(maxDarlehen)+".txt", "w", newline="\n")
-#f.write("jnljnjkbnl\n")
-#f.write("kshvksajjsd")
-#f.close()
-
-#print(maxDarlehen)
-#print(zinssatz)
-#print(tilgung)
-#print(maxDarlehen * ((zinssatz + tilgung) / 100) / 12)
